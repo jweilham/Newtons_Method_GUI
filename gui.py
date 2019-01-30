@@ -168,4 +168,3 @@ def addGUI(self):
 	self.showWork = Button(self, text = "Show Work", command = self.showWork).grid(row=10, column = 0)
 	self.link = Button(self, text = "Explanation of Newton's Method", command = self.exampleLink).grid(row=11, column = 0)
 
-
