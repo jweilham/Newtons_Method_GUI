@@ -20,17 +20,13 @@ class Newton_GUI(Tk):
 
         # GUI title
         self.addTitle("Newton's Method")
- 
-        self.math = my_math.Newton_Math()
-        
         self.addGUI()
-
+        
+        # Member variables
+        self.math = my_math.Newton_Math()
         self.xValues = []
-
-
         # set initial guess to garbage value user wont enter
         self.currentGuess = -99994999
-
 
 
     # Graphs tangent lines by using Newton's method
@@ -65,8 +61,7 @@ class Newton_GUI(Tk):
     # Executes Newton's Method
     # Returns an array of values for Newton's method calculations
     # Starts computation with initial x value of the user's guess of the root
-    # Returns 0 if failed, 1 if succeeded
-            
+    # Returns 0 if failed, 1 if succeeded     
     def newton(self, current_x):
 
         print("newton")
@@ -154,9 +149,3 @@ class Newton_GUI(Tk):
             for i in self.xValues:
                 print("x",count+1, " = ", "x", count, " - ( f(", self.xValues[count],") / f'(", self.xValues[count], ") ) = ", self.xValues[count]) 
                 count+=1
-
-
-
-
-    
-
