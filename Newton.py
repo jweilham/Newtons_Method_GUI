@@ -16,6 +16,12 @@ class Newton_GUI(Tk):
         self.title("Newton's Method")
         self.addTitle("Newton's Method") 
         self.addGUI()
+        self.xValues = []
+        self.currentFormula = []
+        self.root = False
+
+        # set initial guess to garbage value user wont enter
+        self.currentGuess = -99994999
         
 
     # Function for finding the value of the derivative of a function at any given x point
@@ -29,89 +35,27 @@ class Newton_GUI(Tk):
         
         return derivative
 
+    # Returns y-value at the current x for the formula entered
+    def formula(self, x):
 
-    # Graphs tangent lines by using Newton's method
-    def graphTan(self):
-        
-        self.graphEquation(0)
-        
-        #calls formula to set entries of empty values = 0
-        self.formula(0)
-        
-        k = 0
-        # Check to see if the root guess is a number and label it valid
-        try:
-            k = float(self.guess.get())
-            self.guessLabel["text"] = ""
+        print("formula!")
 
-        # If it isn't a number, then delete what's inside it and label it invalid
-        except ValueError:
-            self.guess.delete(0, 'end')
-            self.guessLabel["text"] = "invalid"
-            return
-        
-        # Gets our array of 
-        xValues = self.newton(float((self.guess.get())))
+   
+        #takes the numbers entered and runs them through the function by entering the value of x
+        four = self.currentFormula[0]*x**4
+        three = self.currentFormula[1]*x**3
+        two = self.currentFormula[2]*x**2
+        one = self.currentFormula[3]*x
+        constant = self.currentFormula[4]
 
-        # If 0, then newton method failed, so do not graph
-        if (xValues == 0):
-            return
+        #add them all together to get the y value at each x value
+        c = (four + three + two + one + constant)
 
-
-
-        #iterate through and graph the tangent lines with the xValue in the list
-        z = 0
-        for i in xValues:
-            plt.plot(x, self.tan(i))
-            plt.pause(0.3)
-            z+=1
+       # print(c)
+        #return the y value
+        return (c)
 
     
-        
-    # Executes Newton's Method
-    # Returns an array of values for Newton's method calculations
-    # Starts computation with initial x value of the user's guess of the root
-            
-    def newton(self, current_x):
-
-        if(float(self.fourth.get()) and float(self.third.get()) and float(self.second.get()) and float(self.first.get()) and float(self.constant.get()) == 0):
-            return 0
-
-        accuracy = self.getAccuracy();
-        xValues = []
-        answer = False
-        iterations = 0
-
-        while (answer == False):
-        
-            x1 = current_x
-            
-            # If derivative is 0, tangent line will never hit x axis, no solution
-            try:
-
-                # update our current_x according to Newton's method formula
-                current_x = (current_x - (self.formula(current_x)/(self.derive(current_x))))
-                
-            except ZeroDivisionError:
-                self.rootLabel["text"] = "No root"
-                return 0
-            
-            xValues.insert(iterations, current_x) 
-            iterations+=1
-
-            # After 100 iterations, it's an infinite loop with no answer/root
-            if(iterations>100):
-                self.rootLabel["text"] = "No root"
-                return 0
-    
-            # If we get the same value for our answer as the last iteration,
-            # Then Newton's Method has been satisfied and we have our answer
-            if (accuracy%(current_x) == accuracy%(x1)):
-                answer = True
-                self.rootLabel["text"] = accuracy % current_x
-                return xValues
-
-
     # Finds the equation of the tangent line to the curve at any given x point      
     def tan(self, a):
         
@@ -124,81 +68,168 @@ class Newton_GUI(Tk):
         return (c)
 
 
-    # Returns y-value at the current x for the formula entered
-    def formula(self, x):
 
+
+
+    # Graphs tangent lines by using Newton's method
+    def solve_with_newton(self):
+
+        print("solving with newton!")
+        
+        self.graphEquation(0)
         self.formulaValidation()
+        
+        valid, guess, same_guess = self.get_user_guess()
+        
+        print(valid, guess, same_guess)
 
-        four = float(self.fourth.get())
-        three = float(self.third.get())
-        two = float(self.second.get())
-        one = float(self.first.get())
-        constant = float(self.constant.get())
-                      
-        #takes the numbers entered and runs them through the function by entering the value of x
-        four = four*x**4
-        three = three*x**3
-        two = two*x**2
-        one = one*x
+        if(not valid):
+            return
+        elif(same_guess):
+            print("print out same graph dude")
+            self.graph_tangent_lines()
+            return
 
-        #add them all together to get the y value at each x value
-        c = (four + three + two + one + constant)
+        # Guess is valid, but is not the same
+        else:
 
-        #return the y value
-        return (c)
+            # Clears old xValues
+            del self.xValues[:]
+            
+            self.newton(guess)
+
+            # if newton failed
+            if (not self.xValues):
+                return
+
+            self.graph_tangent_lines()
+
+
 
     
     # Prints out work needed to find answer using Newton's Method by hand
     def showWork(self):
+        print("showWork!")
         
-        #calls formula to set entries of empty values = 0
-        self.formulaValidation()
+        #If there is a new equation
+        if(self.check_for_new_equation()):
+            valid, guess, same = self.get_user_guess()
+            print(valid, guess)
+            if(valid):
+                del self.xValues
+                self.newton(guess)
+                self.print_work()
+            else:
+                return
+            
+        # Not a new equation
+        else:
+            valid, guess, same = self.get_user_guess()
+            # if it's the same guess as last time
+            if(same):
+                plt.close("all")
+                self.print_work()
+                
+            else:
+                del self.xValues[:]
+                self.newton(guess)
+                self.print_work()
 
+    def print_work(self):
+            print("printWork!")
+            
+            print("\n\n")
+            print("x0 = ", self.xValues[0])
+
+            count = 0
+            for i in self.xValues:
+                print("x",count+1, " = ", "x", count, " - ( f(", self.xValues[count],") / f'(", self.xValues[count], ") ) = ", self.xValues[count]) 
+                count+=1
+
+
+    def get_user_guess(self):
+        print("get_user_guess!")
+        
+        # Check to see if the root guess is a number and label it valid
         try:
-            work = self.newton(float(self.guess.get()))
+            same = False
+            guess = float(self.guess.get())
+            if(guess == self.currentGuess):
+                print("same guess!")
+                same = True
+            else:
+                self.currentGuess = guess
+            
+            self.guessLabel["text"] = ""
+            return (True, guess, same)
+
+        # If it isn't a number, then delete what's inside it and label it invalid
         except ValueError:
-            print("No root value error")
-            return
-
-        if (work == 0):
-            print("No root work = 0")
-            return
-
-        print("\n\n")
-        print("x0 = ", work[0])
-
-        count = 0
-        for i in work:
-            print("x",count+1, " = ", "x", count, " - ( f(", work[count],") / f'(", work[count], ") ) = ", work[count]) 
-            count+=1
-
+            self.guess.delete(0, 'end')
+            self.guessLabel["text"] = "invalid"
+            return (False, -1, same)
+    
+    # Executes Newton's Method
+    # Returns an array of values for Newton's method calculations
+    # Starts computation with initial x value of the user's guess of the root
             
-    # Grabs user inputted accuracy in decimals, defaults to 7
-    def getAccuracy(self):
+    def newton(self, current_x):
 
+        print("newton")
+        self.root = False
         
-            #adds together strings to set the accuracy
-            acc1 ='%.'
-            acc2 =  'f'
+        if(float(self.fourth.get()) and float(self.third.get()) and float(self.second.get()) and float(self.first.get()) and float(self.constant.get()) == 0):
+            return 0
+
+        accuracy = self.getAccuracy();
+        iterations = 0
+        while (self.root == False):
+        
+            x1 = current_x
             
-            #try to see if the accuracy entered is a number, if it is then make acc equal to the string of it
+            # If derivative is 0, tangent line will never hit x axis, no solution
             try:
-                k = int(self.acc.get())
-                acc = str(k)
-            except ValueError:
-                self.acc.delete(0, 'end')
-                self.acc.insert(0, 7)
-                acc = '7'
-            if(int(self.acc.get()) > 15):
-                acc = '7'
+                print("newton is doing it's thing")
+                # update our current_x according to Newton's method formula
+                current_x = (current_x - (self.formula(current_x)/(self.derive(current_x))))
+                
+            except ZeroDivisionError:
+                self.rootLabel["text"] = "No root"
+                del self.xValues[:]
+                return 0
             
-            accuracy = acc1 + acc + acc2
+            self.xValues.insert(iterations, current_x) 
+            iterations+=1
 
-            return accuracy
+            # After 100 iterations, it's an infinite loop with no answer/root
+            if(iterations>100):
+                print("iterations!")
+                self.rootLabel["text"] = "No root"
+                del self.xValues[:]
+                return
+    
+            # If we get the same value for our answer as the last iteration,
+            # Then Newton's Method has been satisfied and we have our answer
+            if (accuracy%(current_x) == accuracy%(x1)):
+                print(iterations)
+                self.root = True
+                self.rootLabel["text"] = accuracy % current_x
+                return
 
 
+
+    def graph_tangent_lines(self):
+            #iterate through and graph the tangent lines with the xValue in the list
+            for i in self.xValues:
+                plt.plot(x, self.tan(i))
+                plt.pause(0.3)
+
+ 
     # Graphs equation user entered
     def graphEquation(self, button):
+
+        print("graphEquation!")
+        self.check_for_new_equation()
         
         plt.close("all")
         self.setAxes()
@@ -220,8 +251,58 @@ class Newton_GUI(Tk):
         axes.set_xlim([-20,20])
         axes.set_ylim([-20, 20])
 
+    # Returns true if user has entered a new equation
+    # Stores new equation into our current equation as well
+    def check_for_new_equation(self):
+        print("checking new equation!")
+        self.formulaValidation()
+        
+        four = float(self.fourth.get())
+        three = float(self.third.get())
+        two = float(self.second.get())
+        one = float(self.first.get())
+        constant = float(self.constant.get())
 
+        newFormula = [four, three, two, one, constant]
+
+        if(newFormula == self.currentFormula):
+            return False
+        else:
+            print("new formula!")
+            del self.xValues[:]
+            del self.currentFormula[:]
+            self.currentFormula = newFormula
+            return True
     
+
+
+
+   # Grabs user inputted accuracy in decimals, defaults to 7
+    def getAccuracy(self):
+
+            print("getAccuracy!")
+        
+            #adds together strings to set the accuracy
+            acc1 ='%.'
+            acc2 =  'f'
+            
+            #try to see if the accuracy entered is a number, if it is then make acc equal to the string of it
+            try:
+                k = int(self.acc.get())
+                acc = str(k)
+            except ValueError:
+                self.acc.delete(0, 'end')
+                self.acc.insert(0, 7)
+                acc = '7'
+            if(int(self.acc.get()) > 15):
+                acc = '7'
+            
+            accuracy = acc1 + acc + acc2
+
+            return accuracy
+
+
+
     # If formula input is invalid, or empty, delete and replace it with a default 0
     def formulaValidation(self):
 
@@ -255,7 +336,7 @@ class Newton_GUI(Tk):
             self.constant.delete(0, 'end')
             self.constant.insert(0, 0)
 
-   
+
     def addTitle(self, title):
         Label(self, text = title, fg = "blue", font = ("Times", 25)).grid(columnspan=20)
 
@@ -263,7 +344,7 @@ class Newton_GUI(Tk):
     def exampleLink(self):
         webbrowser.open('http://tutorial.math.lamar.edu/Classes/CalcI/NewtonsMethod.aspx')
 
-                   
+
 
     #Function that adds entries and labels and everything on the GUI for it to work   
     def addGUI(self):
@@ -305,7 +386,7 @@ class Newton_GUI(Tk):
         self.guessLabel = Label(self, anchor = "w", relief = "flat")
         self.guessLabel.grid(row=5, column = 2, sticky = "we")
         
-        self.solveNewton = Button(self, text = "Solve with Newton's Method", command = self.graphTan).grid(row=8, column = 0)
+        self.solveNewton = Button(self, text = "Solve with Newton's Method", command = self.solve_with_newton).grid(row=8, column = 0)
         self.graphFunction = Button(self, text = "Graph Function", command= lambda: self.graphEquation(1) ).grid(row=3, column = 0)
         Label(self, text = "").grid(row=7, column =0)
         Label(self, text = "Root =").grid(row = 9, column = 0)
@@ -317,7 +398,8 @@ class Newton_GUI(Tk):
         self.showWork = Button(self, text = "Show Work", command = self.showWork).grid(row=10, column = 0)
         self.link = Button(self, text = "Explanation of Newton's Method", command = self.exampleLink).grid(row=11, column = 0)
 
-    
+
+
 #defines the main function to be run
 def main():
   gui = Newton_GUI()#creates a new Tk class named app
