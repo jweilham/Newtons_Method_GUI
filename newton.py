@@ -10,7 +10,7 @@ import matplotlib
 class Newton_GUI(Tk):
     
     # import methods
-    from gui import exampleLink, addGUI, addTitle, formulaValidation, getAccuracy
+    from gui import exampleLink, addGUI, addTitle, equationValidation, getAccuracy
     from gui import validate_guess, is_new_equation
     from my_graph import graph_tangent_lines, graphEquation, setAxes
 

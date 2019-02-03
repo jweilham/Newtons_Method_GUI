@@ -71,7 +71,7 @@ def getAccuracy(self):
 
 
 
-# If formula input is invalid, or empty, delete and replace it with a default 0
+# If equation input is invalid, or empty, delete and replace it with a default 0
 def EquationValidation(self):
 
 	try:
