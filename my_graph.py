@@ -4,7 +4,7 @@ from matplotlib import pyplot as plt
 
 def graph_tangent_lines(self):
 	#iterate through and graph the tangent lines with the xValue in the list
-	for i in self.xValues:
+	for i in self.newtonValues:
 		plt.plot( Global.x_range, self.math.tan(i) )
 		plt.pause(0.3)
 
@@ -12,12 +12,11 @@ def graph_tangent_lines(self):
 # Graphs equation user entered
 def graphEquation(self, button):
 
-	print("graphEquation!")
 	self.is_new_equation()
-	
 	plt.close("all")
 	self.setAxes()
 	plt.plot( Global.x_range, self.math.formula(Global.x_range) )
+
 	if(button):
 		plt.show()
 

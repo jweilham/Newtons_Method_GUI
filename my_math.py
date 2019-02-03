@@ -17,11 +17,9 @@ class Newton_Math:
 
 		return derivative
 
+
 	# Returns y-value at the current x for the formula entered
 	def formula(self, x):
-
-		print("formula!")
-
 
 		#takes the numbers entered and runs them through the function by entering the value of x
 		four = self.equation[0]*x**4
@@ -39,16 +37,16 @@ class Newton_Math:
 
 
 	# Finds the equation of the tangent line to the curve at any given x point
-	def tan(self, xValues):
-		print("xvalues: ", xValues)
-		m = self.derive(xValues)
+	def tan(self, x):
+		print("xvalues: ", x)
+		m = self.derive(x)
 		print("m: ", m)
-		y = self.formula(xValues)
+		y = self.formula(x)
 		print("y: ", y)
 
 		#point slope formula, a represents the x value at any given point, and I added the y to this side from the original point slope form
 		#(y - y1) = m*(x-x1)
-		c = ((m*Global.x_range) + (m*(-xValues)) + (y))
+		c = ((m*Global.x_range) + (m*(-x)) + (y))
 		print(c)
 		return (c)
 

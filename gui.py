@@ -3,8 +3,8 @@ from tkinter import *
 # Returns true if user has entered a new equation
 # Stores new equation into our current equation as well
 def is_new_equation(self):
-	print("checking new equation!")
-	self.formulaValidation()
+
+	self.EquationValidation()
 	
 	four = float(self.fourth.get())
 	three = float(self.third.get())
@@ -12,15 +12,15 @@ def is_new_equation(self):
 	one = float(self.first.get())
 	constant = float(self.constant.get())
 
-	newFormula = [four, three, two, one, constant]
+	newEquation = [four, three, two, one, constant]
 
-	if(newFormula == self.math.equation):
+	if(newEquation == self.math.equation):
 		return False
+    # There is a new equation
 	else:
-		print("new formula!")
-		del self.xValues[:]
+		del self.newtonValues[:]
 		del self.math.equation[:]
-		self.math.equation= newFormula
+		self.math.equation= newEquation
 		return True
 
 # validates user guess
@@ -50,8 +50,6 @@ def validate_guess(self):
 # Grabs user inputted accuracy in decimals, defaults to 7
 def getAccuracy(self):
 
-		print("getAccuracy!")
-	
 		#adds together strings to set the accuracy
 		acc1 ='%.'
 		acc2 =  'f'
@@ -74,7 +72,7 @@ def getAccuracy(self):
 
 
 # If formula input is invalid, or empty, delete and replace it with a default 0
-def formulaValidation(self):
+def EquationValidation(self):
 
 	try:
 		four = float(self.fourth.get())
