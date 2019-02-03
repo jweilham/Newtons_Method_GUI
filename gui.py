@@ -4,7 +4,7 @@ from tkinter import *
 # Stores new equation into our current equation as well
 def is_new_equation(self):
 
-	self.EquationValidation()
+	self.equationValidation()
 	
 	four = float(self.fourth.get())
 	three = float(self.third.get())
@@ -72,7 +72,7 @@ def getAccuracy(self):
 
 
 # If equation input is invalid, or empty, delete and replace it with a default 0
-def EquationValidation(self):
+def equationValidation(self):
 
 	try:
 		four = float(self.fourth.get())

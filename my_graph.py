@@ -15,7 +15,7 @@ def graphEquation(self, button):
 	self.is_new_equation()
 	plt.close("all")
 	self.setAxes()
-	plt.plot( Global.x_range, self.math.formula(Global.x_range) )
+	plt.plot( Global.x_range, self.math.y_value(Global.x_range) )
 
 	if(button):
 		plt.show()

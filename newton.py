@@ -35,7 +35,7 @@ class Newton_GUI(Tk):
     def solve_with_newton(self):
 
         self.graphEquation(0)
-        self.formulaValidation()
+        self.equationValidation()
         
         valid, guess_is_same, guess = self.validate_guess()
 
@@ -78,7 +78,7 @@ class Newton_GUI(Tk):
             # If derivative is 0, tangent line will never hit x axis, no solution
             try:
                 # update our current_x according to Newton's method formula
-                current_x = (current_x - (self.math.formula(current_x)/(self.math.derive(current_x))))
+                current_x = (current_x - (self.math.y_value(current_x)/(self.math.derive(current_x))))
                 
             except ZeroDivisionError:
                 self.rootLabel["text"] = "No root"
@@ -90,7 +90,6 @@ class Newton_GUI(Tk):
 
             # After 100 iterations, it's an infinite loop with no answer/root
             if(iterations>100):
-                print("iterations!")
                 self.rootLabel["text"] = "No root"
                 del self.newtonValues[:]
                 return 0
@@ -98,7 +97,6 @@ class Newton_GUI(Tk):
             # If we get the same value for our answer as the last iteration,
             # Then Newton's Method has been satisfied and we have our answer
             if (accuracy%(current_x) == accuracy%(x1)):
-                print(iterations)
                 self.root = True
                 self.rootLabel["text"] = accuracy % current_x
                 return 1
@@ -127,7 +125,6 @@ class Newton_GUI(Tk):
             valid, guess_is_same, guess = self.validate_guess()
             # if it's the same guess as last time
             if(guess_is_same):
-                plt.close("all")
                 self.print_work()
                 
             else:
